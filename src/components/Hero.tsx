@@ -1,5 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
@@ -20,7 +19,7 @@ export default function Hero() {
           Experience the pinnacle of automotive excellence. Our curated collection of premium vehicles is designed for those who demand more.
         </p>
         <div className="animate-slide-up [animation-delay:400ms] flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/inventory" className="w-full sm:w-auto bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-accent transition-all transform hover:scale-105 active:scale-95 inline-block text-center">
+          <Link to="/inventory" className="w-full sm:w-auto bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-accent transition-all transform hover:scale-105 active:scale-95 inline-block text-center">
             Browse Inventory
           </Link>
           <a href="https://wa.me/2348146664096?text=I%20would%20like%20to%20book%20a%20test%20drive" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto glass-effect text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-all transform hover:scale-105 active:scale-95 inline-block text-center">
