@@ -3,7 +3,7 @@ import { Car } from "@/integrations/supabase/types";
 import { useCurrency } from "@/components/CurrencyProvider";
 
 interface CarCardProps {
-  car: Car["Row"];
+  car: Car;
 }
 
 export default function CarCard({ car }: CarCardProps) {

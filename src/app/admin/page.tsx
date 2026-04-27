@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Car, supabase } from "@/lib/supabase";
+import { CarInsert } from "@/integrations/supabase/types";
 import Navbar from "@/components/Navbar";
 import { useCurrency } from "@/components/CurrencyProvider";
-import Image from "next/image";
 
 export default function AdminDashboard() {
   const { formatPrice } = useCurrency();
@@ -109,7 +109,7 @@ export default function AdminDashboard() {
         ? await uploadImages(selectedFiles)
         : ["https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1000"];
 
-      const carData = {
+      const carData: CarInsert = {
         ...formData,
         images: imageUrls,
         features: formData.features.split(",").map(f => f.trim()),
@@ -117,7 +117,7 @@ export default function AdminDashboard() {
         created_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("cars").insert([carData]);
+      const { error } = await supabase.from("cars").insert(carData as any);
 
       if (error) {
         alert("Error adding car: " + error.message);
@@ -217,7 +217,7 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
                       {previewUrls.map((url, index) => (
                         <div key={index} className="relative aspect-video rounded-lg overflow-hidden border border-white/10">
-                          <Image src={url} alt={`Preview ${index}`} fill className="object-cover" />
+                          <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
                         </div>
                       ))}
                     </div>

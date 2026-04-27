@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
+import { Car, CarInsert } from "@/integrations/supabase/types";
 import Navbar from "@/components/Navbar";
 import { useCurrency } from "@/components/CurrencyProvider";
-
-type Car = Database["public"]["Tables"]["cars"]["Row"];
 
 export default function Admin() {
   const { formatPrice } = useCurrency();
@@ -109,7 +107,7 @@ export default function Admin() {
         ? await uploadImages(selectedFiles)
         : ["https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1000"];
 
-      const carData = {
+      const carData: CarInsert = {
         ...formData,
         images: imageUrls,
         features: formData.features.split(",").map(f => f.trim()),
@@ -117,7 +115,7 @@ export default function Admin() {
         created_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("cars").insert([carData]);
+      const { error } = await supabase.from("cars").insert(carData as any);
 
       if (error) {
         alert("Error adding car: " + error.message);

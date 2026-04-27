@@ -71,3 +71,7 @@ export interface Database {
     }
   }
 }
+
+export type Car = Database["public"]["Tables"]["cars"]["Row"];
+export type CarInsert = Database["public"]["Tables"]["cars"]["Insert"];
+export type CarUpdate = Database["public"]["Tables"]["cars"]["Update"];
