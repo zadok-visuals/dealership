@@ -9,7 +9,7 @@ export default function Hero() {
       
       {/* Background Image */}
       <div className="absolute inset-0">
-        <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=2070')] bg-cover bg-center opacity-60 animate-fade-in" />
+        <div className="w-full h-full bg-[url('https://i.pinimg.com/1200x/e0/39/7b/e0397be083c5b6b01082389b2604d0c9.jpg')] bg-cover bg-center opacity-60 animate-fade-in" />
       </div>
 
       {/* Content Container */}
@@ -31,7 +31,7 @@ export default function Hero() {
           </Link>
           
           <a 
-            href="https://wa.me" 
+            href="https://wa.me/+2348146664096" 
             target="_blank" 
             rel="noopener noreferrer" 
             className="w-full sm:w-auto glass-effect text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-all transform hover:scale-105 active:scale-95 inline-block text-center"

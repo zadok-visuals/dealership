@@ -13,6 +13,8 @@ export default function Admin() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState("");
   
   const [formData, setFormData] = useState({
     make: "",
@@ -88,9 +90,8 @@ export default function Admin() {
         .upload(filePath, file);
 
       if (uploadError) {
-        console.warn("Storage upload failed (Bucket might not exist):", uploadError);
-        // In demo mode, we use a placeholder if real upload fails
-        urls.push(`https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1000`);
+        alert("Upload failed: " + uploadError.message + "\nMake sure you have created a PUBLIC bucket named 'cars' in Supabase Storage.");
+        throw uploadError;
       } else {
         const { data } = supabase.storage.from('cars').getPublicUrl(filePath);
         urls.push(data.publicUrl);
@@ -106,7 +107,7 @@ export default function Admin() {
     try {
       const imageUrls = selectedFiles.length > 0 
         ? await uploadImages(selectedFiles)
-        : ["https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1000"];
+        : []; // Store empty array if no images
 
       const carData: CarInsert = {
         ...formData,
@@ -117,15 +118,17 @@ export default function Admin() {
       };
 
       if (editingId) {
+        // Remove created_at from updates to avoid type errors
+        const { created_at, ...updateData } = carData;
         const { error } = await supabase
           .from("cars")
-          .update(carData as any)
+          .update(updateData)
           .eq("id", editingId);
         
         if (error) throw error;
         alert("Car updated successfully!");
       } else {
-        const { error } = await supabase.from("cars").insert(carData as any);
+        const { error } = await supabase.from("cars").insert(carData);
         if (error) throw error;
         alert("Car added successfully!");
       }
@@ -185,6 +188,37 @@ export default function Admin() {
     } else {
       fetchCars();
     }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="bg-black min-h-screen flex flex-col items-center justify-center text-white p-6">
+        <Navbar />
+        <div className="w-full max-w-md bg-white/5 p-8 rounded-[2rem] border border-white/10 shadow-2xl">
+          <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
+          <input 
+            type="password" 
+            placeholder="Enter password"
+            className="w-full bg-black border border-white/10 rounded-xl p-4 mb-4 focus:border-accent outline-none"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && password === 'khalifa2026' && setIsAuthenticated(true)}
+          />
+          <button 
+            onClick={() => {
+              if (password === 'khalifa2026') {
+                setIsAuthenticated(true);
+              } else {
+                alert("Incorrect password");
+              }
+            }}
+            className="w-full bg-accent text-black py-4 rounded-xl font-bold hover:bg-white transition-all"
+          >
+            Access Dashboard
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -354,7 +388,7 @@ export default function Admin() {
                       <td className="p-6">
                         <div className="w-32 h-20 rounded-lg overflow-hidden border border-white/10">
                           <img 
-                            src={car.images[0] || "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=300"} 
+                            src={car.images[0] || ""} 
                             alt="Thumbnail" 
                             className="w-full h-full object-cover"
                           />
@@ -388,23 +422,6 @@ export default function Admin() {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="py-12 bg-black border-t border-white/5">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-2xl font-bold text-white font-car-both">
-            khalifa<span className="text-accent italic">Auto</span>
-          </div>
-          <div className="flex gap-8 text-sm text-white/40">
-            <a href="#" className="hover:text-accent transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-accent transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-accent transition-colors">Cookies</a>
-          </div>
-          <div className="text-sm text-white/20">
-            © 2026 khalifa Auto. ALL RIGHTS RESERVED.
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -5,7 +5,6 @@ import CarCard from "./CarCard";
 
 type Car = Database["public"]["Tables"]["cars"]["Row"];
 
-
 export default function InventoryGrid() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
@@ -13,6 +12,7 @@ export default function InventoryGrid() {
   useEffect(() => {
     async function fetchCars() {
       try {
+        setLoading(true);
         const { data, error } = await supabase
           .from("cars")
           .select("*")
@@ -49,16 +49,8 @@ export default function InventoryGrid() {
               FEATURED <span className="text-accent">INVENTORY</span>
             </h2>
             <p className="text-white/50 max-w-lg">
-              Explore our hand-picked selection of the world&apos;s most exceptional vehicles. Each car is inspected to ensure peak performance.
+              Explore our hand-picked selection of the world&apos;s most exceptional vehicles.
             </p>
-          </div>
-          <div className="flex gap-4">
-            <button className="bg-white/5 border border-white/10 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-white/10 transition-colors">
-              Filter
-            </button>
-            <button className="bg-white/5 border border-white/10 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-white/10 transition-colors">
-              Sort
-            </button>
           </div>
         </div>
 

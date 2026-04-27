@@ -14,7 +14,7 @@ export default function About() {
             
             <div className="aspect-[21/9] rounded-3xl overflow-hidden mb-16 border border-white/10 shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1562141989-c5c79ac8f576?auto=format&fit=crop&q=80&w=2000" 
+                src="https://i.pinimg.com/1200x/e0/39/7b/e0397be083c5b6b01082389b2604d0c9.jpg" 
                 alt="Luxury Showroom" 
                 className="w-full h-full object-cover"
               />
