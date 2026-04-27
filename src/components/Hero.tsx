@@ -13,7 +13,7 @@ export default function Hero() {
       </div>
 
       {/* Content Container */}
-      <div className="container relative z-[100] mx-auto px-6 text-center">
+      <div className="container relative z-10 mx-auto px-6 text-center">
         <h1 className="animate-slide-up text-5xl md:text-8xl font-bold tracking-tight text-white font-car-both mb-6">
           DRIVE THE <span className="text-gradient">FUTURE</span>
         </h1>

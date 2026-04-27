@@ -171,6 +171,7 @@ export default function Admin() {
       features: car.features.join(", "),
     });
     setEditingId(car.id);
+    setPreviewUrls(car.images);
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -231,8 +232,27 @@ export default function Admin() {
             <h1 className="text-4xl font-bold font-car-both">INVENTORY <span className="text-accent">MANAGEMENT</span></h1>
             <button 
               onClick={() => {
+                if (!showForm) {
+                  // If opening for a NEW car, reset everything
+                  setEditingId(null);
+                  setFormData({
+                    make: "",
+                    model: "",
+                    year: new Date().getFullYear(),
+                    price: 0,
+                    mileage: 0,
+                    transmission: "Automatic",
+                    fuel_type: "Petrol",
+                    description: "",
+                    features: "",
+                  });
+                  setPreviewUrls([]);
+                  setSelectedFiles([]);
+                } else {
+                  // If canceling, just clear editing state
+                  setEditingId(null);
+                }
                 setShowForm(!showForm);
-                if (showForm) setEditingId(null);
               }}
               className="bg-accent text-black px-6 py-2 rounded-full font-bold hover:bg-white transition-colors"
             >
