@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import Navbar from "@/components/Navbar";
 import { useCurrency } from "@/components/CurrencyProvider";
+import carsData from "@/data/cars.json";
 
 type Car = Database["public"]["Tables"]["cars"]["Row"];
 
@@ -15,26 +16,11 @@ export default function CarDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchCar() {
-      try {
-        const { data, error } = await supabase
-          .from("cars")
-          .select("*")
-          .eq("id", id)
-          .single();
-
-        if (error) throw error;
-        if (data) {
-          setCar(data);
-        }
-      } catch (err) {
-        console.error("Error fetching car:", err);
-      } finally {
-        setLoading(false);
-      }
+    const foundCar = (carsData as Car[]).find(c => c.id === id);
+    if (foundCar) {
+      setCar(foundCar);
     }
-
-    fetchCar();
+    setLoading(false);
   }, [id]);
 
   if (loading) {

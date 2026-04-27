@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import CarCard from "./CarCard";
+import carsData from "@/data/cars.json";
 
 type Car = Database["public"]["Tables"]["cars"]["Row"];
 
@@ -10,26 +11,9 @@ export default function InventoryGrid() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchCars() {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from("cars")
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-        if (data) {
-          setCars(data);
-        }
-      } catch (err) {
-        console.error("Error fetching cars:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchCars();
+    // Using local JSON data as the source of truth for the static site
+    setCars(carsData as Car[]);
+    setLoading(false);
   }, []);
 
   if (loading) {
