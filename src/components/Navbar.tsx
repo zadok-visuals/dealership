@@ -22,7 +22,7 @@ export default function Navbar() {
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <span className="text-2xl font-bold tracking- text-white font-car-both">
-            khalifa<span className="text-accent italic">AUTO</span>
+            khalifa<span className="text-accent italic">Auto</span>
           </span>
         </Link>
 

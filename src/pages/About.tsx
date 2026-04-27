@@ -24,7 +24,7 @@ export default function About() {
               <div className="space-y-6">
                 <h2 className="text-3xl font-bold text-accent">OUR VISION</h2>
                 <p className="text-white/60 text-lg leading-relaxed">
-                  At khalifa AUTO, we believe that buying a premium vehicle should be as exhilarating as driving one. We've stripped away the traditional dealership friction to create a seamless, digital-first experience that prioritizes your time and taste.
+                  At khalifa Auto, we believe that buying a premium vehicle should be as exhilarating as driving one. We've stripped away the traditional dealership friction to create a seamless, digital-first experience that prioritizes your time and taste.
                 </p>
                 <p className="text-white/60 text-lg leading-relaxed">
                   Our collection is more than just inventory; it's a curated gallery of engineering masterpieces, hand-selected for those who demand nothing less than perfection.
@@ -74,7 +74,7 @@ export default function About() {
       <footer className="py-12 bg-black border-t border-white/5">
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="text-2xl font-bold text-white font-car-both">
-            khalifa<span className="text-accent italic">AUTO</span>
+            khalifa<span className="text-accent italic">Auto</span>
           </div>
           <div className="flex gap-8 text-sm text-white/40">
             <a href="#" className="hover:text-accent transition-colors">Privacy Policy</a>
@@ -82,7 +82,7 @@ export default function About() {
             <a href="#" className="hover:text-accent transition-colors">Cookies</a>
           </div>
           <div className="text-sm text-white/20">
-            © 2026 khalifa AUTO. ALL RIGHTS RESERVED.
+            © 2026 khalifa Auto. ALL RIGHTS RESERVED.
           </div>
         </div>
       </footer>

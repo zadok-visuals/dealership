@@ -12,6 +12,7 @@ export default function Admin() {
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     make: "",
@@ -112,37 +113,77 @@ export default function Admin() {
         images: imageUrls,
         features: formData.features.split(",").map(f => f.trim()),
         status: "Available",
-        created_at: new Date().toISOString(),
+        created_at: editingId ? undefined : new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("cars").insert(carData as any);
-
-      if (error) {
-        alert("Error adding car: " + error.message);
+      if (editingId) {
+        const { error } = await supabase
+          .from("cars")
+          .update(carData as any)
+          .eq("id", editingId);
+        
+        if (error) throw error;
+        alert("Car updated successfully!");
       } else {
+        const { error } = await supabase.from("cars").insert(carData as any);
+        if (error) throw error;
         alert("Car added successfully!");
-        setShowForm(false);
-        setFormData({
-          make: "",
-          model: "",
-          year: new Date().getFullYear(),
-          price: 0,
-          mileage: 0,
-          transmission: "Automatic",
-          fuel_type: "Petrol",
-          description: "",
-          features: "",
-        });
-        setSelectedFiles([]);
-        previewUrls.forEach(url => URL.revokeObjectURL(url));
-        setPreviewUrls([]);
-        fetchCars();
       }
+
+      setShowForm(false);
+      setEditingId(null);
+      setFormData({
+        make: "",
+        model: "",
+        year: new Date().getFullYear(),
+        price: 0,
+        mileage: 0,
+        transmission: "Automatic",
+        fuel_type: "Petrol",
+        description: "",
+        features: "",
+      });
+      setSelectedFiles([]);
+      previewUrls.forEach(url => URL.revokeObjectURL(url));
+      setPreviewUrls([]);
+      fetchCars();
     } catch (err) {
       console.error(err);
       alert("Something went wrong");
     } finally {
       setUploading(false);
+    }
+  }
+
+  function handleEdit(car: Car) {
+    setFormData({
+      make: car.make,
+      model: car.model,
+      year: car.year,
+      price: car.price,
+      mileage: car.mileage,
+      transmission: car.transmission as any,
+      fuel_type: car.fuel_type as any,
+      description: car.description,
+      features: car.features.join(", "),
+    });
+    setEditingId(car.id);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm("Are you sure you want to delete this listing?")) return;
+
+    const { error } = await supabase
+      .from("cars")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      alert("Error deleting car: " + error.message);
+    } else {
+      fetchCars();
     }
   }
 
@@ -155,7 +196,10 @@ export default function Admin() {
           <div className="flex justify-between items-center mb-12">
             <h1 className="text-4xl font-bold font-car-both">INVENTORY <span className="text-accent">MANAGEMENT</span></h1>
             <button 
-              onClick={() => setShowForm(!showForm)}
+              onClick={() => {
+                setShowForm(!showForm);
+                if (showForm) setEditingId(null);
+              }}
               className="bg-accent text-black px-6 py-2 rounded-full font-bold hover:bg-white transition-colors"
             >
               {showForm ? "Cancel" : "+ Add Car"}
@@ -195,6 +239,36 @@ export default function Admin() {
                   className="w-full bg-white/5 border border-white/10 rounded-xl p-3 focus:border-accent outline-none text-white"
                   value={formData.price} onChange={e => setFormData({...formData, price: parseInt(e.target.value)})}
                 />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm text-white/40">Mileage (km)</label>
+                <input 
+                  type="number" required
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 focus:border-accent outline-none text-white"
+                  value={formData.mileage} onChange={e => setFormData({...formData, mileage: parseInt(e.target.value)})}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm text-white/40">Transmission</label>
+                <select 
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 focus:border-accent outline-none text-white"
+                  value={formData.transmission} onChange={e => setFormData({...formData, transmission: e.target.value as any})}
+                >
+                  <option value="Automatic" className="bg-zinc-900">Automatic</option>
+                  <option value="Manual" className="bg-zinc-900">Manual</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm text-white/40">Fuel Type</label>
+                <select 
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 focus:border-accent outline-none text-white"
+                  value={formData.fuel_type} onChange={e => setFormData({...formData, fuel_type: e.target.value as any})}
+                >
+                  <option value="Petrol" className="bg-zinc-900">Petrol</option>
+                  <option value="Diesel" className="bg-zinc-900">Diesel</option>
+                  <option value="Electric" className="bg-zinc-900">Electric</option>
+                  <option value="Hybrid" className="bg-zinc-900">Hybrid</option>
+                </select>
               </div>
 
               {/* Drag and Drop Area */}
@@ -252,7 +326,7 @@ export default function Admin() {
                 disabled={uploading}
                 className={`md:col-span-2 bg-accent text-black py-4 rounded-xl font-bold text-lg hover:bg-white transition-all ${uploading ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                {uploading ? "Uploading..." : "Publish Listing"}
+                {uploading ? "Uploading..." : editingId ? "Update Listing" : "Publish Listing"}
               </button>
             </form>
           )}
@@ -262,6 +336,7 @@ export default function Admin() {
               <thead>
                 <tr className="border-b border-white/10 bg-white/5">
                   <th className="p-6 text-sm font-bold text-white/40">Vehicle</th>
+                  <th className="p-6 text-sm font-bold text-white/40">Image</th>
                   <th className="p-6 text-sm font-bold text-white/40">Price</th>
                   <th className="p-6 text-sm font-bold text-white/40">Status</th>
                   <th className="p-6 text-sm font-bold text-white/40">Actions</th>
@@ -270,18 +345,40 @@ export default function Admin() {
               <tbody>
                 {cars.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-12 text-center text-white/20 italic">No inventory found in Supabase.</td>
+                    <td colSpan={5} className="p-12 text-center text-white/20 italic">No inventory found in Supabase.</td>
                   </tr>
                 ) : (
                   cars.map((car) => (
                     <tr key={car.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="p-6 font-bold">{car.year} {car.make} {car.model}</td>
+                      <td className="p-6">
+                        <div className="w-32 h-20 rounded-lg overflow-hidden border border-white/10">
+                          <img 
+                            src={car.images[0] || "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=300"} 
+                            alt="Thumbnail" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </td>
                       <td className="p-6 text-accent font-bold">{formatPrice(car.price)}</td>
                       <td className="p-6">
                         <span className="bg-white/10 px-3 py-1 rounded-full text-xs">{car.status}</span>
                       </td>
                       <td className="p-6">
-                        <button className="text-white/40 hover:text-red-500 transition-colors">Delete</button>
+                        <div className="flex gap-4">
+                          <button 
+                            onClick={() => handleEdit(car)}
+                            className="text-accent hover:text-white transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(car.id)}
+                            className="text-white/20 hover:text-red-500 transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -291,6 +388,23 @@ export default function Admin() {
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="py-12 bg-black border-t border-white/5">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="text-2xl font-bold text-white font-car-both">
+            khalifa<span className="text-accent italic">Auto</span>
+          </div>
+          <div className="flex gap-8 text-sm text-white/40">
+            <a href="#" className="hover:text-accent transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-accent transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-accent transition-colors">Cookies</a>
+          </div>
+          <div className="text-sm text-white/20">
+            © 2026 khalifa Auto. ALL RIGHTS RESERVED.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

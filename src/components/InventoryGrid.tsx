@@ -5,54 +5,6 @@ import CarCard from "./CarCard";
 
 type Car = Database["public"]["Tables"]["cars"]["Row"];
 
-// Sample data for demonstration if Supabase is not configured
-const SAMPLE_CARS: Car[] = [
-  {
-    id: "1",
-    make: "Mercedes-Benz",
-    model: "AMG GT",
-    year: 2023,
-    price: 155000,
-    mileage: 1200,
-    transmission: "Automatic",
-    fuel_type: "Petrol",
-    images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&q=80&w=2070"],
-    description: "The Mercedes-AMG GT is a car that will make you feel like a pro driver.",
-    features: ["Heated Seats", "Sunroof", "Parking Sensors"],
-    status: "Available",
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    make: "Porsche",
-    model: "911 Carrera",
-    year: 2022,
-    price: 125000,
-    mileage: 5400,
-    transmission: "Automatic",
-    fuel_type: "Petrol",
-    images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=2070"],
-    description: "The Porsche 911 is a timeless classic.",
-    features: ["Leather Seats", "Bose Sound System", "Adaptive Cruise Control"],
-    status: "Available",
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    make: "Audi",
-    model: "RS e-tron GT",
-    year: 2024,
-    price: 140000,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel_type: "Electric",
-    images: ["https://images.unsplash.com/photo-1614200187524-dc4b892acf16?auto=format&fit=crop&q=80&w=2070"],
-    description: "The Audi RS e-tron GT is the future of performance.",
-    features: ["Virtual Cockpit", "360 Camera", "Matrix LED"],
-    status: "Available",
-    created_at: new Date().toISOString(),
-  },
-];
 
 export default function InventoryGrid() {
   const [cars, setCars] = useState<Car[]>([]);
@@ -67,14 +19,11 @@ export default function InventoryGrid() {
           .order("created_at", { ascending: false });
 
         if (error) throw error;
-        if (data && data.length > 0) {
+        if (data) {
           setCars(data);
-        } else {
-          setCars(SAMPLE_CARS);
         }
       } catch (err) {
-        // Fallback to sample cars if Supabase isn't configured
-        setCars(SAMPLE_CARS);
+        console.error("Error fetching cars:", err);
       } finally {
         setLoading(false);
       }

@@ -7,24 +7,6 @@ import { useCurrency } from "@/components/CurrencyProvider";
 
 type Car = Database["public"]["Tables"]["cars"]["Row"];
 
-// Sample data for fallback
-const SAMPLE_CARS: Record<string, Car> = {
-  "1": {
-    id: "1",
-    make: "Mercedes-Benz",
-    model: "AMG GT",
-    year: 2023,
-    price: 155000,
-    mileage: 1200,
-    transmission: "Automatic",
-    fuel_type: "Petrol",
-    images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&q=80&w=2070"],
-    description: "The Mercedes-AMG GT combines the fascination of an authentic sports car with segment-specific technology leadership and high practicality. With a top speed of 312 km/h and an acceleration from 0 to 100 km/h in 3.6 seconds, the Mercedes-AMG GT guarantees an adrenaline kick.",
-    features: ["Heated Seats", "Sunroof", "Parking Sensors", "Burmester Surround Sound", "AMG Performance Seats", "Active Aerodynamics"],
-    status: "Available",
-    created_at: new Date().toISOString(),
-  },
-};
 
 export default function CarDetail() {
   const { id } = useParams();
@@ -44,14 +26,9 @@ export default function CarDetail() {
         if (error) throw error;
         if (data) {
           setCar(data);
-        } else if (id && SAMPLE_CARS[id]) {
-          setCar(SAMPLE_CARS[id]);
         }
       } catch (err) {
         console.error("Error fetching car:", err);
-        if (id && SAMPLE_CARS[id]) {
-          setCar(SAMPLE_CARS[id]);
-        }
       } finally {
         setLoading(false);
       }
