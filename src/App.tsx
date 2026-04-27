@@ -3,6 +3,7 @@ import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import Inventory from "./pages/Inventory";
 import CarDetail from "./pages/CarDetail";
+import About from "./pages/About";
 import { CurrencyProvider } from "./components/CurrencyProvider";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/about" element={<About />} />
           <Route path="/cars/:id" element={<CarDetail />} />
         </Routes>
       </BrowserRouter>

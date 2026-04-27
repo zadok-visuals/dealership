@@ -33,6 +33,9 @@ export default function Navbar() {
           <Link to="/about" className="text-sm font-medium text-white/80 hover:text-white transition-colors">
             About
           </Link>
+          <Link to="/admin" className="text-sm font-medium text-white/40 hover:text-white transition-colors">
+            Admin
+          </Link>
         </div>
 
         <div className="flex items-center gap-4">
