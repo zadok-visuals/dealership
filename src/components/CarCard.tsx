@@ -1,10 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
-import { Car } from "@/lib/supabase";
+import { Link } from "react-router-dom";
+import { Car } from "@/integrations/supabase/types";
 import { useCurrency } from "@/components/CurrencyProvider";
 
 interface CarCardProps {
-  car: Car;
+  car: Car["Row"];
 }
 
 export default function CarCard({ car }: CarCardProps) {
@@ -14,11 +13,10 @@ export default function CarCard({ car }: CarCardProps) {
     <div className="group relative overflow-hidden rounded-2xl bg-slate-dark border border-white/5 transition-all hover:border-accent/30 hover:shadow-2xl hover:shadow-accent/5">
       {/* Image Container */}
       <div className="relative aspect-[16/10] overflow-hidden">
-        <Image
+        <img
           src={car.images[0] || "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1000"}
           alt={`${car.make} ${car.model}`}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute top-4 left-4 z-10">
           <span className="bg-black/60 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/10">
@@ -56,7 +54,7 @@ export default function CarCard({ car }: CarCardProps) {
           </div>
         </div>
 
-        <Link href={`/cars/${car.id}`} className="block w-full bg-white/5 border border-white/10 text-white py-3 rounded-xl font-bold text-sm transition-all text-center group-hover:bg-accent group-hover:text-black group-hover:border-accent">
+        <Link to={`/cars/${car.id}`} className="block w-full bg-white/5 border border-white/10 text-white py-3 rounded-xl font-bold text-sm transition-all text-center group-hover:bg-accent group-hover:text-black group-hover:border-accent">
           View Details
         </Link>
       </div>

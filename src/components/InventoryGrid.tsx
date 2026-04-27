@@ -1,8 +1,9 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import { Car, supabase, isDemoMode } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import CarCard from "./CarCard";
+
+type Car = Database["public"]["Tables"]["cars"]["Row"];
 
 // Sample data for demonstration if Supabase is not configured
 const SAMPLE_CARS: Car[] = [
@@ -59,12 +60,6 @@ export default function InventoryGrid() {
 
   useEffect(() => {
     async function fetchCars() {
-      if (isDemoMode) {
-        setCars(SAMPLE_CARS);
-        setLoading(false);
-        return;
-      }
-
       try {
         const { data, error } = await supabase
           .from("cars")
